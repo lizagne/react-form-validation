@@ -6,11 +6,9 @@ class Form extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
-      formErrors: {email: '', password: ''},
-      emailValid: false,
-      passwordValid: false,
+      name: '',
+      formErrors: {name: ''},
+      nameValid: false,
       formValid: false
     }
   }
@@ -24,29 +22,24 @@ class Form extends Component {
 
   validateField(fieldName, value) {
     let fieldValidationErrors = this.state.formErrors;
-    let emailValid = this.state.emailValid;
-    let passwordValid = this.state.passwordValid;
+    let nameValid = this.state.nameValid;
+
 
     switch(fieldName) {
-      case 'email':
-        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-        fieldValidationErrors.email = emailValid ? '' : ' is invalid';
-        break;
-      case 'password':
-        passwordValid = value.length >= 6;
-        fieldValidationErrors.password = passwordValid ? '': ' is too short';
+      case 'name':
+        nameValid = value.match(/^[a-zA-Z][a-zA-Z0-9 \-']+$/);
+        fieldValidationErrors.name = nameValid ? '' : ' can only include, letters, numbers, hyphens and apostrophes';
         break;
       default:
         break;
     }
     this.setState({formErrors: fieldValidationErrors,
-                    emailValid: emailValid,
-                    passwordValid: passwordValid
+                    nameValid: nameValid,
                   }, this.validateForm);
   }
 
   validateForm() {
-    this.setState({formValid: this.state.emailValid && this.state.passwordValid});
+    this.setState({formValid: this.state.nameValid});
   }
 
   errorClass(error) {
@@ -56,25 +49,17 @@ class Form extends Component {
   render () {
     return (
       <form className="demoForm">
-        <h2>Sign up</h2>
         <div className="panel panel-default">
-          <FormErrors formErrors={this.state.formErrors} />
+          <FormErrors formErrors={ this.state.formErrors } />
         </div>
-        <div className={`form-group ${this.errorClass(this.state.formErrors.email)}`}>
-          <label htmlFor="email">Email address</label>
-          <input type="email" required className="form-control" name="email"
-            placeholder="Email"
-            value={this.state.email}
-            onChange={this.handleUserInput}  />
+        <div className={`form-group ${this.errorClass(this.state.formErrors.name)}`}>
+          <label htmlFor="email">Team Player Name</label>
+          <input type="text" required className="form-control" name="name"
+            placeholder="Name"
+            value={ this.state.name }
+            onChange={ this.handleUserInput }  />
         </div>
-        <div className={`form-group ${this.errorClass(this.state.formErrors.password)}`}>
-          <label htmlFor="password">Password</label>
-          <input type="password" className="form-control" name="password"
-            placeholder="Password"
-            value={this.state.password}
-            onChange={this.handleUserInput}  />
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={!this.state.formValid}>Sign up</button>
+        <button type="submit" className="btn btn-primary" disabled={!this.state.formValid}>Add Player</button>
       </form>
     )
   }
